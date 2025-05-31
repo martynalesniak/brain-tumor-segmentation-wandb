@@ -112,7 +112,7 @@ Skrypt  **`brain_age_trainer_holdout.py`** służy do trenowania konwolucyjnej s
 - Monitorowanie odbywa się przy pomocy TensorBoard, z zapisem metryk i wykresów.
 
 ### Zmiany kótre zostały przez nas wprowadzone
-- możliowść wczytania wag z poprzedniego treningu
+- możliwość wczytania wag z poprzedniego treningu
   
 
 
