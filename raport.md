@@ -16,7 +16,7 @@
 
 ...
 
-## 5. Trening modelu
+## 5. Opis modelu
 
 ### Model ResNet3D
 
@@ -45,7 +45,24 @@ Po ekstrakcji cech następuje:
 
 Zadaniem tej części jest **regresja**, tzn. model zwraca pojedynczą wartość liczbową na wyjściu.
 
-### Przebieg treningu modelu 
+## 6. Trening modelu
+
+Ze względu na ograniczone zasoby obliczeniowe dostępne w środowisku Colab, trening modelu przeprowadzono etapowo, w kilku partiach, zamiast jednorazowo:
+
+1. **Podział treningu na partie:**
+   - Trening odbywał się w trzech fazach:
+     - **Pierwsza faza:** 5 epok
+     - **Druga faza:** kolejne 5 epok
+     - **Trzecia faza:** ostatnie 10 epok
+   - Łącznie model był trenowany przez 20 epok, ale z przerwami na załadunek wagi.
+
+2. **Wczytywanie wag między fazami:**
+   - Po zakończeniu każdej fazy treningu:
+     - Zapisane zostały finalne wagi modelu (`.pth`).
+     - Następnie, przed rozpoczęciem kolejnej fazy, wagi z poprzedniego etapu były wczytywane, 
+       aby kontynuować trening od momentu, w którym został przerwany.
+   - Dzięki temu możliwe było zachowanie ciągłości uczenia pomimo restartów sesji lub ograniczeń pamięci.
+
 
 Skrypt  **`brain_age_trainer_holdout.py`** służy do trenowania konwolucyjnej sieci neuronowej (ResNet3D).
 
@@ -93,10 +110,10 @@ Skrypt  **`brain_age_trainer_holdout.py`** służy do trenowania konwolucyjnej s
 
 
 
-## 6. Porównanie wyników
+## 7. Porównanie wyników
 
 ...
 
-## 7. Wnioski
+## 8. Wnioski
 
 ...
