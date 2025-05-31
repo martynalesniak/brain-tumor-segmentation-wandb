@@ -18,7 +18,80 @@
 
 ## 5. Trening modelu
 
-...
+### Model ResNet3D
+
+W publikacji wykorzystano trójwymiarowy model sieci rezydualnej (**ResNet3D**), zaprojektowany do analizy danych przestrzennych o wymiarach `[wysokość, szerokość, głębokość]`.
+Aby zwiększyć dokładność predykcji, autorzy zastosowali **ensemble pięciu niezależnie wytrenowanych modeli ResNet3D**. Ostateczna predykcja była uzyskiwana poprzez uśrednienie wyników wszystkich modeli (średnia arytmetyczna). 
+
+Kążdy z 5 modeli składa się z następujących komponentów:
+
+#### 1. Część konwolucyjna (`ResidualNet3D`)
+Zawiera sześć bloków rezydualnych typu **bottleneck**, wykorzystujących warstwy:
+- `Conv3D` – konwolucje trójwymiarowe,
+- `BatchNorm3D` – normalizacja wsadowa,
+- `LeakyReLU` – funkcja aktywacji.
+
+Dodatkowo uwzględniono:
+- warstwę początkową z konwolucją 7×7×7 i `MaxPooling3D`,
+- końcowe uśrednianie przestrzenne za pomocą `AvgPooling3D`.
+
+#### 2. Bloki rezydualne
+Każdy blok wykorzystuje **residual connections**, które umożliwiają dodanie wejścia do wyjścia danego bloku. Mechanizm ten wspiera propagację gradientu, co pozwala efektywnie uczyć głębokie sieci neuronowe.
+
+#### 3. Część w pełni połączona
+Po ekstrakcji cech następuje:
+- spłaszczenie danych (`flatten`),
+- przejście przez trzy warstwy w pełni połączone (`Linear`) z funkcjami aktywacji `ReLU`.
+
+Zadaniem tej części jest **regresja**, tzn. model zwraca pojedynczą wartość liczbową na wyjściu.
+
+### Przebieg treningu modelu 
+
+Skrypt  **`brain_age_trainer_holdout.py`** służy do trenowania konwolucyjnej sieci neuronowej (ResNet3D).
+
+#### Główne etapy treningu:
+
+1. **Wczytanie i przygotowanie danych:**
+   - Dane wczytywane są z pliku CSV, który zawiera ścieżki do przetworzonych i zarejestrowanych obrazów oraz informacje o wieku i podziale na zbiory (`train`, `dev`, `test`).
+   - Na zbiorze treningowym stosowana jest augmentacja obrazów, na zbiorach walidacyjnych i testowych brak augmentacji.
+
+2. **Tworzenie zestawów danych i loaderów:**
+   - Tworzone są zestawy danych dla treningu, walidacji (dev) i opcjonalnie testów.
+   - Dane ładowane są wsadowo (`batch_size=20`), z równoległym wczytywaniem.
+
+3. **Inicjalizacja modelu i optymalizatora:**
+   - Trenowanych jest 5 modeli ResNet3D jako zespół (ensemble).
+   - Używany jest optymalizator SGD z początkową stopą uczenia 0.002, która co 5 epok zmniejszana jest dziesięciokrotnie.
+   - Funkcja straty to błąd bezwzględny (MAE).
+
+4. **Trening:**
+   - Model uczy się przez określoną liczbę epok (domyślnie 20).
+   - W każdej epoce przeprowadzane jest uczenie na zbiorze treningowym oraz ocena na zbiorze walidacyjnym.
+   - Po ostatniej epoce, jeśli istnieje zbiór testowy, wykonywana jest ewaluacja na tym zbiorze.
+
+5. **Ewaluacja i monitorowanie:**
+   - Podczas treningu i ewaluacji zapisywane są metryki MAE oraz korelacja Pearsona między przewidywanym a rzeczywistym wiekiem.
+   - Tworzone są wykresy rozrzutu dla każdej epoki i modelu, zapisywane do TensorBoard.
+   - Obliczana jest także średnia predykcja (ensemble) z 5 modeli.
+
+6. **Zapis wyników i modeli:**
+   - Po każdej epoce zapisywane są wagi modeli w formacie `.pth`.
+   - Wyniki predykcji zapisywane są do plików CSV w katalogu wyników.
+
+### Podsumowanie
+
+- Model jest trenowany na przetworzonych obrazach MRI.
+- Wykorzystuje się augmentację do zwiększenia zróżnicowania danych treningowych.
+- Stosuje się metodę ensemble 5 modeli ResNet3D, co zwiększa stabilność predykcji.
+- Stopa uczenia jest adaptacyjnie zmniejszana co 5 epok.
+- Monitorowanie odbywa się przy pomocy TensorBoard, z zapisem metryk i wykresów.
+
+### Zmiany kótre zostały przez nas wprowadzone
+- możliowść wczytania wag z poprzedniego treningu
+  
+
+
+
 
 ## 6. Porównanie wyników
 
