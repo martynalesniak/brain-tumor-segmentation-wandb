@@ -55,24 +55,23 @@ Zadaniem tej części jest **regresja**, tzn. model zwraca pojedynczą wartość
 
 ## 6. Trening modelu
 
-Ze względu na ograniczone zasoby obliczeniowe dostępne w środowisku Colab, trening modelu przeprowadzono etapowo, w kilku partiach, zamiast jednorazowo:
+Ze względu na ograniczone zasoby obliczeniowe dostępne w środowisku Colab, trening modelu przeprowadzono w kilku etapach:
 
 1. **Podział treningu na partie:**
    - Trening odbywał się w trzech fazach:
      - **Pierwsza faza:** 5 epok
      - **Druga faza:** kolejne 5 epok
      - **Trzecia faza:** ostatnie 10 epok
-   - Łącznie model był trenowany przez 20 epok, ale z przerwami na załadunek wagi.
+   - Łącznie model był trenowany przez 20 epok, z przerwami na ładowanie wag.
 
 2. **Wczytywanie wag między fazami:**
    - Po zakończeniu każdej fazy treningu:
      - Zapisane zostały finalne wagi modelu (`.pth`).
-     - Następnie, przed rozpoczęciem kolejnej fazy, wagi z poprzedniego etapu były wczytywane, 
-       aby kontynuować trening od momentu, w którym został przerwany.
-   - Dzięki temu możliwe było zachowanie ciągłości uczenia pomimo restartów sesji lub ograniczeń pamięci.
+     - Następnie wczytywane były wagi z poprzedniego etapu, aby kontynuować trening od momentu, w którym został przerwany.
+   - Dzięki temu możliwe było zachowanie ciągłości uczenia pomimo restartów sesji i ograniczeń pamięci.
 
 
-Skrypt  **`brain_age_trainer_holdout.py`** służy do trenowania konwolucyjnej sieci neuronowej (ResNet3D).
+Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** znajdujący się na Githubie autorów artykułu. Został on lekko zmodyfikowany, aby można było wczytywać wagi z poprzedniego etapu treningu. 
 
 #### Główne etapy treningu:
 
