@@ -6,6 +6,7 @@
 ...
 
 ## 3. Dane i rozkład wieku
+![Rozkład wieku](histogram_kde_rozklad_wieku.png)
 
 ...
 
@@ -114,12 +115,30 @@ Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** zna
 - możliwość wczytania wag z poprzedniego treningu
   
 
-
-
-
 ## 7. Porównanie wyników
 
-...
+
+Aby ocenić jakość predykcji naszego modelu, porównaliśmy go z wynikami uzyskanymi przez model przedstawiony w oryginalnym artykule referencyjnym. Do analizy wykorzstałyśmy dane testowe (te których nie widział nasz model podczas treningu).
+
+### Wykorzystane metryki:
+
+- **MAE (Mean Absolute Error)** – średni błąd bezwzględny.
+- **RMSE (Root Mean Squared Error)** – pierwiastek z błędu średniokwadratowego.
+- **R² (R-squared)** – współczynnik determinacji, mierzący dopasowanie modelu.
+- **Pearson r** – współczynnik korelacji liniowej między predykcjami a rzeczywistym wiekiem.
+
+### Wyniki:
+
+| Model               | MAE  | RMSE | R²   | Pearson r |
+|--------------------|-------|-------|------|------------|
+| Nasz model         | 6.26  | 60.61 | 0.78 | 0.88       |
+| Model z artykułu   | 12.67 | 253.75| 0.08 | 0.88       |
+
+ **Uwaga na temat porównania:**  
+Zdajemy sobie sprawę, że porównanie to może mieć ograniczoną wartość poznawczą. Nasz model był trenowany jedynie na danych pochodzących od osób zdrowych, podczas gdy model z publikacji był uczony na znacznie większym zbiorze danych, zawierającym zarówno osoby zdrowe, jak i chore. Co więcej, z powodu ograniczonych zasobów obliczeniowych trenowałyśmy nasz model na relatywnie niewielkiej liczbie epok oraz przykładów, co również może mieć wpływ na końcową jakość predykcji.
+
+
+
 
 ## 8. Wnioski
 
