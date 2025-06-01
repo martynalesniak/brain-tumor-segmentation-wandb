@@ -6,13 +6,10 @@
 ...
 
 ## 3. Dane i rozkład wieku
-![Rozkład wieku](histogram_kde_rozklad_wieku.png)
-
 ...
 
 ### Rozkład wieku w naszym zbiorze:
-...
-
+<img src="plots/histogram_kde_rozklad_wieku.png" alt="Rozkład wieku" width="600">
 ## 4. Preprocessing
 
 W artykule, którym się zajmowałyśmy, sposób w jaki wykonany został preprocessing odgrywał kluczową rolę. Celem autorów było jego uproszczenie i udało im się to osiągnąć wykorzystując do preprocessingu wyłącznie jeden krok. Zastosowano tzw. rigid registration obrazów T1-weighted do wzorca MNI (Montreal Neurological Institute template space). Metoda ta polega na wyrównaniu każdego obrazu MRI do standardowego wzorca mózgu, czyli obraz jest jedynie przesuwany i obracany. Znacznie upraszcza to zastosowanie modelu na szerszą skalę, ponieważ preprocessing trwa krótko oraz nie potrzeba bardzo dużych zasobów do jego wykonania. 
@@ -117,25 +114,39 @@ Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** zna
 
 ## 7. Porównanie wyników
 
-
-Aby ocenić jakość predykcji naszego modelu, porównaliśmy go z wynikami uzyskanymi przez model przedstawiony w oryginalnym artykule referencyjnym. Do analizy wykorzstałyśmy dane testowe (te których nie widział nasz model podczas treningu).
+Aby ocenić jakość predykcji naszego modelu, porównałyśmy jego wyniki z rezultatami przedstawionymi w oryginalnym artykule referencyjnym. Do analizy wykorzystałyśmy dane testowe (takie, których nasz model nie widział podczas treningu).
 
 ### Wykorzystane metryki:
 
 - **MAE (Mean Absolute Error)** – średni błąd bezwzględny.
 - **RMSE (Root Mean Squared Error)** – pierwiastek z błędu średniokwadratowego.
-- **R² (R-squared)** – współczynnik determinacji, mierzący dopasowanie modelu.
+- **R² (R-squared)** – współczynnik determinacji, mierzący dopasowanie modelu do danych.
 - **Pearson r** – współczynnik korelacji liniowej między predykcjami a rzeczywistym wiekiem.
 
 ### Wyniki:
 
-| Model               | MAE  | RMSE | R²   | Pearson r |
-|--------------------|-------|-------|------|------------|
-| Nasz model         | 6.26  | 60.61 | 0.78 | 0.88       |
-| Model z artykułu   | 12.67 | 253.75| 0.08 | 0.88       |
+| Model               | MAE   | RMSE   | R²    | Pearson r |
+|--------------------|-------|--------|-------|-----------|
+| Nasz model         | 6.26  | 60.61  | 0.78  | 0.88      |
+| Model z artykułu   | 12.67 | 253.75 | 0.08  | 0.88      |
 
- **Uwaga na temat porównania:**  
-Zdajemy sobie sprawę, że porównanie to może mieć ograniczoną wartość poznawczą. Nasz model był trenowany jedynie na danych pochodzących od osób zdrowych, podczas gdy model z publikacji był uczony na znacznie większym zbiorze danych, zawierającym zarówno osoby zdrowe, jak i chore. Co więcej, z powodu ograniczonych zasobów obliczeniowych trenowałyśmy nasz model na relatywnie niewielkiej liczbie epok oraz przykładów, co również może mieć wpływ na końcową jakość predykcji.
+> **Uwaga:** W publikacji autorzy podali także wynik MAE = **2.99**, uzyskany przy użyciu znacznie większego oraz bardziej zróżnicowanego zbioru danych.
+
+### Wizualizacja
+
+Poniżej przedstawiamy porównanie rozkładu wieku rzeczywistego, wieku przewidzianego przez nasz model oraz wieku przewidzianego przez model z artykułu (boxploty):
+
+<img src="plots/boxplot_porownanie.png" alt="Porównanie rozkładu wieku" width="800">
+
+### Ograniczenia porównania
+
+Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
+
+- Nasz model był trenowany wyłącznie na danych pochodzących od osób zdrowych.
+- Model z publikacji korzystał z większego i bardziej zróżnicowanego zbioru danych (obejmującego zarówno osoby zdrowe, jak i chore).
+- Ze względu na ograniczone zasoby obliczeniowe (Google Colab), nasz model był trenowany w małych porcjach: **2×5 epok**, a następnie **10 epok**, przy każdej kolejnej turze wczytując finalne wagi z poprzedniej.
+- Mniejsza liczba danych i epok treningowych może znacząco wpływać na jakość predykcji.
+
 
 
 
