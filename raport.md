@@ -1,14 +1,29 @@
 # Raport z replikacji: Predykcja wieku biologicznego na podstawie MRI mózgu
 ## 1. Opis zadania
-...
+Naszym zadaniem było odtworzenie pełnego procesu treningu i testowania modelu konwolucyjnej sieci neuronowej (CNN) do predykcji biologicznego wieku mózgu przedstawionego w publikacji *A deep learning model for brain age prediction using minimally preprocessed T1w images as input* (Dartora et al., 2024), z zastosowaniem nowego, zewnętrznego zbioru danych – IXI Dataset. Model opisany w artykule uczy się na podstawie obrazów MRI mózgu osób zdrowych typowych zmian zachodzących wraz z wiekiem, aby w późniejszych zastosowaniach umożliwić szacowanie tzw. biologicznego wieku mózgu. Odchylenia tego wieku od wieku metrykalnego mogą odzwierciedlać przyspieszone lub opóźnione starzenie się mózgu i stanowić cenny wskaźnik ryzyka wystąpienia chorób neurodegeneracyjnych, takich jak choroba Alzheimera.
+
+Postawione przez nas pytania badawcze brzmiały:
+- Czy model zaproponowany przez autorów publikacji przetrenowany na nowym zbiorze danych osób zdrowych osiąga porównywalną dokładność predykcji względem modelu oryginalnego
+- Czy dokładność predykcji wieku mózgu różni się istotnie między kobietami i mężczyznami? Jeśli tak, czy różnice te wskazują na różne stopnie dopasowania modelu do wzorców strukturalnych charakterystycznych dla płci?
+
+Zadanie replikacji obejmowało trzy etapy:
+1.	Preprocessing danych obrazowych MRI (T1-weighted) – przestrzenne wyrównanie do wzorca
+2.	Trening modelu z wykorzystaniem wydzielonych zbiorów treningowego i walidacyjnego, dopasowany do dostępnych zasobów obliczeniowych
+3.	Ewaluacja modelu na zbiorze testowym
+
+Następnie dokonałyśmy porównania skuteczności predykcji obydwu modeli, ewaluując oryginalny model na tym samym zbiorze testowym IXI, a także zbadałyśmy różnice w dokładności predykcji wieku między kobietami a mężczyznami. Uzyskane wyniki przedstawiłyśmy na odpowiednich wykresach.
 
 ## 2. Krótki opis metody z publikacji
 ...
 
-## 3. Dane i rozkład wieku
-...
+## 3. Dane
+### Dane użyte przez autorów
+Autorzy korzystali z dużego zbioru danych obrazowania MRI T1-weighted (T1w) od zdrowych osób dorosłych w wieku od 32 do 96 lat. Dane pochodziły z różnych otwartych źródeł (kohort), obejmujących łącznie 17 296 skanów MRI. Poniżej znajduje się diagram opisujący te dane.
 
-### Rozkład wieku w naszym zbiorze:
+### Dane użyte do replikacji treningu i ewaluacji
+W badaniu wykorzystano dane z IXI dataset, obejmujące wyłącznie obrazy MRI T1-weighted (T1w) oraz odpowiadający im plik CSV z danymi demograficznymi (wiek, płeć). Zbiór ten zawiera skany około 600 zdrowych dorosłych osób w wieku od 18 do 87 lat z trzech londyńskich szpitali, wykonane różnymi skanerami (1.5T i 3T). Poniżej znajduje się rozkład wieku w tym zbiorze.
+
+#### Rozkład wieku w naszym zbiorze:
 <img src="plots/histogram_kde_rozklad_wieku.png" alt="Rozkład wieku" width="600">
 
 ## 4. Preprocessing
@@ -143,8 +158,6 @@ Poniżej przedstawiamy porównanie rozkładu wieku rzeczywistego, wieku przewidz
 
 Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
 
-- Nasz model był trenowany wyłącznie na danych pochodzących od osób zdrowych.
-- Model z publikacji korzystał z większego i bardziej zróżnicowanego zbioru danych (obejmującego zarówno osoby zdrowe, jak i chore).
 - Ze względu na ograniczone zasoby obliczeniowe (Google Colab), nasz model był trenowany w małych porcjach: **2×5 epok**, a następnie **10 epok**, przy każdej kolejnej turze wczytując finalne wagi z poprzedniej.
 - Mniejsza liczba danych i epok treningowych może znacząco wpływać na jakość predykcji.
 
@@ -153,5 +166,4 @@ Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
 
 
 ## 8. Wnioski
-
-...
+Na podstawie analizy wyników oryginalnego modelu na zbiorze testowym IXI zaobserwowano systematyczne zawyżanie przewidywanego wieku biologicznego u osób młodszych (poniżej 40. roku życia). Model ten trenowany był na obrazach MRI osób w wieku 32–96 lat, z których zdecydowana większość miała powyżej 45 lat. Nie miał więc dostępu do przykładów mózgów młodych osób, co najprawdopodobniej uniemożliwiło mu nauczenie się charakterystycznych wzorców anatomicznych dla tej grupy wiekowej. W rezultacie predykcje dla młodszych osób są przesunięte w stronę wieku, który model znał z danych treningowych, co skutkuje wyraźnym błędem systematycznym. Obserwacja ta potwierdza, że dobór reprezentatywnego i zróżnicowanego zbioru treningowego — obejmującego pełny zakres wiekowy — ma kluczowe znaczenie dla możliwości uogólnienia modelu na nowe dane.
