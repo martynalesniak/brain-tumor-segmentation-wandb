@@ -24,7 +24,7 @@ Następnie aby porównać skuteczność obydwu modeli i przeprowadzić analizę 
 ### Dane użyte przez autorów
 Autorzy korzystali z dużego zbioru danych obrazowania MRI T1-weighted (T1w) od zdrowych osób dorosłych w wieku od 32 do 96 lat. Dane pochodziły z różnych otwartych źródeł (kohort), obejmujących łącznie 17 296 skanów MRI. Poniżej znajduje się diagram opisujący te dane.
 
-<img src="plots/artykul_data_diagram.jpg" alt="Rozkład wieku na całym zbiorze" width="600">
+<img src="plots/article_data_diagram.jpg" alt="Rozkład wieku na całym zbiorze" width="600">
 
 ### Dane użyte do replikacji treningu i ewaluacji
 W badaniu wykorzystano dane z IXI dataset, obejmujące wyłącznie obrazy MRI T1-weighted (T1w) oraz odpowiadający im plik CSV z danymi demograficznymi (wiek, płeć). Zbiór ten zawiera skany około 600 zdrowych dorosłych osób w wieku od 18 do 87 lat z trzech londyńskich szpitali, wykonane różnymi skanerami (1.5T i 3T). Poniżej znajduje się rozkład wieku w tym zbiorze.
