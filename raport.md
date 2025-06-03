@@ -172,7 +172,9 @@ Poniżej przedstawiamy porównanie rozkładu wieku rzeczywistego, wieku przewidz
    <img src="plots/MAE_przedzialy_plec_nasz_model.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="49%" />
 </p>
 
+
 Wizualizacje zawarte w artykule:
+
 <img src="plots/article_figure1.jpg" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="500">
 <img src="plots/article_scatterplot1.jpg" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="500">
 
