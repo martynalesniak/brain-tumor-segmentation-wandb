@@ -156,7 +156,7 @@ Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** zna
   
 Ogólny schemat treningu przedstawia poniższa grafika.
 
-<img src="plots/article_training_scheme.jpg" alt="Schemat treningu" width="600">
+<img src="plots/article_training_scheme.jpg" alt="Schemat treningu" width="800">
 
 
 ### Podsumowanie
