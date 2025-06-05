@@ -1,6 +1,6 @@
 # Raport z replikacji: Predykcja wieku biologicznego na podstawie MRI mózgu
 ## 1. Opis zadania i pytania badawcze
-Naszym zadaniem było odtworzenie pełnego procesu treningu i testowania modelu konwolucyjnej sieci neuronowej (CNN) do predykcji biologicznego wieku mózgu przedstawionego w publikacji *A deep learning model for brain age prediction using minimally preprocessed T1w images as input* (Dartora et al., 2024), z zastosowaniem nowego, zewnętrznego zbioru danych – IXI Dataset. Model opisany w artykule uczy się na podstawie obrazów MRI mózgu osób zdrowych typowych zmian zachodzących wraz z wiekiem, aby w późniejszych zastosowaniach umożliwić szacowanie tzw. biologicznego wieku mózgu. Odchylenia tego wieku od wieku metrykalnego mogą odzwierciedlać przyspieszone lub opóźnione starzenie się mózgu i stanowić cenny wskaźnik ryzyka wystąpienia chorób neurodegeneracyjnych, takich jak choroba Alzheimera.
+Naszym zadaniem było odtworzenie pełnego procesu treningu i testowania modelu konwolucyjnej sieci neuronowej (CNN) do predykcji biologicznego wieku mózgu przedstawionego w publikacji *A deep learning model for brain age prediction using minimally preprocessed T1w images as input* (Dartora et al., 2024), z zastosowaniem nowego, zewnętrznego zbioru danych – **IXI Dataset**. Model opisany w artykule uczy się na podstawie obrazów MRI mózgu osób zdrowych typowych zmian zachodzących wraz z wiekiem, aby w późniejszych zastosowaniach umożliwić szacowanie tzw. biologicznego wieku mózgu. Odchylenia tego wieku od wieku metrykalnego mogą odzwierciedlać przyspieszone lub opóźnione starzenie się mózgu i stanowić cenny wskaźnik ryzyka wystąpienia chorób neurodegeneracyjnych, takich jak choroba Alzheimera.
 
 #### Postawione przez nas pytania badawcze brzmiały:
 - Czy model zaproponowany przez autorów publikacji przetrenowany na nowym zbiorze danych MRI osób zdrowych osiąga porównywalną dokładność predykcji wieku względem modelu oryginalnego? Jakie mogą być powody ewentualnych różnic?
@@ -17,30 +17,58 @@ Następnie aby porównać skuteczność obydwu modeli i przeprowadzić analizę 
 - Analiza wyników i zbadanie różnic z wykorzystaniem wizualizacji eksploracyjnych danych wejściowych, także z uwzględnieniem podziału według płci.
 
 
-## 2. Krótki opis metody z publikacji
-...
+## 2. Opis metody z publikacji
+W omawianej pracy naukowej zaproponowano konwolucyjną sieć neuronową (CNN) do predykcji wieku mózgu na podstawie obrazów MRI typu T1-weighted (T1w). Do trenowania modelu (w sposób nadzorowany) wykorzystano wyłącznie obrazy MRI i znany wiek chronologiczny osób. Jego architektura została oparta na głębokiej sieci CNN typu ResNet, rozszerzonej o konwolucje 3D, co pozwala na efektywne przetwarzanie trójwymiarowych danych obrazowych MRI. Sieć została zaimplementowana z użyciem biblioteki PyTorch do głębokiego uczenia. Składa się z 26 warstw i wykorzystuje bloki rezydualne (residual blocks), które ułatwiają propagację gradientów w głębokiej sieci i poprawiają stabilność treningu. Każda operacja konwolucyjna w modelu jest wspierana przez normalizację wsadową (batch normalization) oraz funkcję aktywacji ReLU.
+
+Model wykorzystuje jeden krok wstępnego przetwarzania obrazów, co upraszcza implementację i zwiększa jego użyteczność w praktyce badawczej oraz klinicznej. Etap preprocessingu wymaga jedynie przestrzennego wyrównania obrazu do szablonu MNI (Montreal Neurological Institute), co jest zaletą w porównaniu z wieloma wcześniejszymi podejściami wymagającymi więcej kroków, takich jak ekstrakcja cech.
+
+Autorzy publikacji zastosowali kilka wariantów podejścia do trenowania i oceny modelu:
+- CNN1 – model trenowany w podejściu holdout (80% trenowanie, 10% walidacja, 10% test),
+- CNN2 – 10-krotna walidacja krzyżowa (bez danych zewnętrznych w treningu),
+- CNN3 – jak CNN2, ale dane zewnętrzne włączone do treningu,
+- CNN4 – jak CNN2, ale z użyciem obrazów skull-stripped (po usunięciu czaszki).
+
+Każdy z tych wariantów jest oceniany osobno i testowany na różnych zbiorach danych, ale każdy z nich bazuje na tej samej architekturze modelu oraz wykorzystuje ensemble z 5 niezależnie trenowanych instancji ResNet3D.
+
+W naszym projekcie do replikacji procesu treningu i ewaluacji wykorzystałyśmy model CNN1.
+
 
 ## 3. Dane
 ### Dane użyte przez autorów
-Autorzy korzystali z dużego zbioru danych obrazowania MRI T1-weighted (T1w) od zdrowych osób dorosłych w wieku od 32 do 96 lat. Dane pochodziły z różnych otwartych źródeł (kohort), obejmujących łącznie 17 296 skanów MRI. Poniżej znajduje się diagram opisujący te dane.
+Autorzy korzystali z dużego zbioru danych obrazowania MRI T1-weighted (T1w) od osób poznawczo zdrowych w wieku od 32 do 96 lat. Dane pochodziły z sześciu różnych baz danych (kohort) międzynarodowych projektów badawczych, obejmujących łącznie 17 296 skanów MRI. Stan poznawczo zdrowy zdefiniowano na podstawie braku demencji, upośledzenia funkcji poznawczych i innych zaburzeń neurologicznych i psychiatrycznych. Kwalifikacja uczestników opierała się ponadto na standardowych testach klinicznych i przesiewowych (m.in. MMSE, czyli Mini-Mental State Examination). 
+
+Poniżej znajduje się diagram opisujący te dane (na którym „age ± SD” oznacza średni wiek i odchylenie standardowe).
 
 <img src="plots/article_data_diagram.jpg" alt="Rozkład wieku na całym zbiorze" width="600">
 
 ### Dane użyte do replikacji treningu i ewaluacji
-W badaniu wykorzystano dane z IXI dataset, obejmujące wyłącznie obrazy MRI T1-weighted (T1w) oraz odpowiadający im plik CSV z danymi demograficznymi (wiek, płeć). Zbiór ten zawiera skany około 600 zdrowych dorosłych osób w wieku od 18 do 87 lat z trzech londyńskich szpitali, wykonane różnymi skanerami (1.5T i 3T). Poniżej znajduje się rozkład wieku w tym zbiorze.
+W badaniu wykorzystano dane z IXI dataset, obejmujące wyłącznie obrazy MRI T1-weighted (T1w) oraz odpowiadający im plik CSV z danymi demograficznymi (wiek, płeć). Zbiór ten zawiera skany około 600 zdrowych poznawczo osób w wieku od 18 do 87 lat z trzech londyńskich szpitali, wykonane różnymi skanerami (1.5T i 3T). Na potrzeby treningu i ewaluacji naszego modelu podzieliłyśmy te dane na osobne zbiory: treningowy (70% danych), walidacyjny (15%) i testowy (15%). 
 
-#### Rozkład wieku w naszym zbiorze
+Poniżej pokazane są wykresy rozkładu wieku w danych IXI: 
+- (1) Histogram rozkładu wieku w całym zbiorze z linią KDE (Kernel Density Estimate), 
+- (2) Histogram rozkładu wieku w połączonych zbiorach treningowym i walidacyjnym (użyte do trenowania naszego modelu) z uwzględnieniem udziału obu płci.
+
 <p float="left">
    <img src="plots/rozklad_wieku_caly.png" alt="Rozkład wieku na całym zbiorze" width="51.9%">
    <img src="plots/rozklad_wiek_plec_train.png" alt="Rozkład wieku na zbiorach train i val wg płci" width="47.6%">
 </p>
+
+Udział poszczególnych płci w zbiorach przedstawia się następująco:
+
+W całym zbiorze:
+- Kobiety 55.69%
+- Mężczyźni 44.31%
+
+W zbiorach treningowym i walidacyjnym:
+- Kobiety 54.51%
+- Mężczyźni 45.49%
 
 
 ## 4. Preprocessing
 
 W artykule, którym się zajmowałyśmy, sposób w jaki wykonany został preprocessing odgrywał kluczową rolę. Celem autorów było jego uproszczenie i udało im się to osiągnąć wykorzystując do preprocessingu wyłącznie jeden krok. Zastosowano tzw. rigid registration obrazów T1-weighted do wzorca MNI (Montreal Neurological Institute template space). Metoda ta polega na wyrównaniu każdego obrazu MRI do standardowego wzorca mózgu, czyli obraz jest jedynie przesuwany i obracany. Znacznie upraszcza to zastosowanie modelu na szerszą skalę, ponieważ preprocessing trwa krótko oraz nie potrzeba bardzo dużych zasobów do jego wykonania. 
 
-W celu wykonania preprocessingu należało wykonać następujące kroki:
+Aby wstępnie przetworzyć zbiór danych należało wykonać następujące kroki:
 - zainstalować pakiet FSL, służący do analizy obrazów MRI. Z pakietu wykorzystano narzędzie FLIRT, które używane jest do liniowej rejestracji obrazów medycznych, czyli dopasowywania jednego obrazu do drugiego, tak aby struktury anatomiczne się pokrywały.
 - stworzyć plik .csv w odpowiednim formacie, zawierający między innymi wiek pacjenta, ścieżkę do zdjęcia MRI oraz podział na zbiory testowy, treningowy i walidacyjny. 
 - Uruchomić skrypt **`brain_age_trainer_preprocessing.py`**, który wykonuje rigid registration z 6 stopniami swobody wykorzystując narzędzie FLIRT i zapisuje wyniki do określonego folderu. 
@@ -55,7 +83,7 @@ Wykonanie rejestracji trwa około jednej minuty na obraz, co jest znaczącym skr
 W publikacji wykorzystano trójwymiarowy model sieci rezydualnej (**ResNet3D**), zaprojektowany do analizy danych przestrzennych o wymiarach `[wysokość, szerokość, głębokość]`.
 Aby zwiększyć dokładność predykcji, autorzy zastosowali **ensemble pięciu niezależnie wytrenowanych modeli ResNet3D**. Ostateczna predykcja była uzyskiwana poprzez uśrednienie wyników wszystkich modeli (średnia arytmetyczna). 
 
-Kążdy z 5 modeli składa się z następujących komponentów:
+Każdy z 5 modeli składa się z następujących komponentów:
 
 #### 1. Część konwolucyjna (`ResidualNet3D`)
 Zawiera sześć bloków rezydualnych typu **bottleneck**, wykorzystujących warstwy:
@@ -125,6 +153,11 @@ Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** zna
 6. **Zapis wyników i modeli:**
    - Po każdej epoce zapisywane są wagi modeli w formacie `.pth`.
    - Wyniki predykcji zapisywane są do plików CSV w katalogu wyników.
+  
+Ogólny schemat treningu przedstawia poniższa grafika.
+
+<img src="plots/article_training_scheme.jpg" alt="Schemat treningu" width="600">
+
 
 ### Podsumowanie
 
@@ -134,7 +167,7 @@ Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** zna
 - Stopa uczenia jest adaptacyjnie zmniejszana co 5 epok.
 - Monitorowanie odbywa się przy pomocy TensorBoard, z zapisem metryk i wykresów.
 
-### Zmiany kótre zostały przez nas wprowadzone
+### Zmiany które zostały przez nas wprowadzone
 - możliwość wczytania wag z poprzedniego treningu
   
 
@@ -160,23 +193,40 @@ Aby ocenić jakość predykcji naszego modelu, porównałyśmy jego wyniki z rez
 
 ### Wizualizacje
 
-Poniżej przedstawiamy porównanie rozkładu wieku rzeczywistego, wieku przewidzianego przez nasz model oraz wieku przewidzianego przez model z artykułu (boxploty):
+Poniżej przedstawiamy porównanie rozkładu wieku rzeczywistego w zbiorze testowym IXI, wieku przewidzianego przez nasz model oraz wieku przewidzianego przez model z artykułu (boxploty).
 
-<img src="plots/boxploty_wiek_modele.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="495">
+<img src="plots/boxploty_wiek_modele.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji modeli" width="495">
+
+Następne dwa wykresy pokazują predykcje naszego modelu i modelu oryginalnego na tym zbiorze z uwzględnieniem płci (scatterploty).
+
 <p float="left">
-  <img src="plots/scatterplot_plec_nasz_model.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="49%" />
-   <img src="plots/scatterplot_plec_ich_model.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="49%" />
+  <img src="plots/scatterplot_plec_nasz_model.png" alt="Scatter plot predykcji naszego modelu" width="49%" />
+   <img src="plots/scatterplot_plec_ich_model.png" alt="Scatter plot predykcji oryginalnego modelu" width="49%" />
 </p>
+
+Poniżej znajduje się wykres zależności między predykcjami wieku mózgu naszego modelu i modelu oryginalnego na zbiorze testowym IXI.
+
+<img src="plots/scatterplot_dwa_modele.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji modeli" width="495">
+
+Na kolejnych dwóch wykresach widzimy wartości MAE predykcji w poszczególnych przedziałach wiekowych - na pierwszym z nich porównanie wyników obydwu modeli, na drugim błędy predykcji naszego modelu z podziałem według płci.
+
 <p float="left">
-   <img src="plots/MAE_przedzialy_modele.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="49%" />
-   <img src="plots/MAE_przedzialy_plec_nasz_model.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="49%" />
+   <img src="plots/MAE_przedzialy_modele.png" alt="Wykres słupkowy wartości MAE predykcji w przedziałach wiekowych - dwa modele" width="49%" />
+   <img src="plots/MAE_przedzialy_plec_nasz_model.png" alt="Wykres słupkowy wartości MAE predykcji naszego modelu w przedziałach wiekowych wg płci" width="49%" />
 </p>
 
+**Wizualizacje zawarte w artykule:**
 
-Wizualizacje zawarte w artykule:
+Poniższe wykresy typu scatterplot przedstawiają predykcje modelu CNN1 z artykułu na danych treningowych i testowych wydzielonych z kohort ADNI, AIBL, GENIC i UKB według proporcji hold-out (80% train, 10% val, 10% test). Na zbiorze testowym model osiągnął wynik **MAE = 2.99 lat**.
 
-<img src="plots/article_figure1.jpg" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="800">
-<img src="plots/article_scatterplot1.jpg" alt="Porównanie rozkładu wieku dla danych testowych i predykcji" width="800">
+<img src="plots/article_scatterplot1.jpg" alt="Scatter plot predykcji oryginalnego modelu na danych treningowych i testowych" width="800">
+
+Następne dwa wykresy skrzynkowe pokazują odpowiednio: 
+- (A) rozkład wieku rzeczywistego w zbiorze AddNeuroMed i rozkłady wieku przewidywanego przez modele CNN1, 2 i 4,
+- (B) rozkład wieku rzeczywistego w zbiorze J-ADNI i rozkłady wieku przewidywanego przez modele CNN1, 2 i 4.
+
+<img src="plots/article_figure2.jpg" alt="Rozkłady wieku w danych AddNeuroMed i predykcji modeli" width="600">
+<img src="plots/article_figure3.jpg" alt="Rozkłady wieku w danych J-ADNI i predykcji modeli" width="600">
 
 
 ### Ograniczenia porównania
