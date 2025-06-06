@@ -206,7 +206,7 @@ Następne dwa wykresy pokazują predykcje naszego modelu i modelu oryginalnego n
 
 Poniżej znajduje się wykres zależności między predykcjami wieku mózgu naszego modelu i modelu oryginalnego na zbiorze testowym IXI.
 
-<img src="plots/scatterplot_dwa_modele.png" alt="Porównanie rozkładu wieku dla danych testowych i predykcji modeli" width="495">
+<img src="plots/scatterplot_dwa_modele.png" alt="Scatterplot zależności między predykcjami obydwu modeli" width="495">
 
 Na kolejnych dwóch wykresach widzimy wartości MAE predykcji w poszczególnych przedziałach wiekowych - na pierwszym z nich porównanie wyników obydwu modeli, na drugim błędy predykcji naszego modelu z podziałem według płci.
 
@@ -215,7 +215,12 @@ Na kolejnych dwóch wykresach widzimy wartości MAE predykcji w poszczególnych 
    <img src="plots/MAE_przedzialy_plec_nasz_model.png" alt="Wykres słupkowy wartości MAE predykcji naszego modelu w przedziałach wiekowych wg płci" width="49%" />
 </p>
 
-**Wizualizacje zawarte w artykule:**
+Średnie błędy bezwzględne predykcji wieku w całym zbiorze w podziale na płeć wyniosły:
+- dla kobiet: MAE = 6.44,
+- dla mężczyzn: MAE = 5.95.
+
+
+#### Wizualizacje zawarte w artykule:
 
 Poniższe wykresy typu scatterplot przedstawiają predykcje modelu CNN1 z artykułu na danych treningowych i testowych wydzielonych z kohort ADNI, AIBL, GENIC i UKB według proporcji hold-out (80% train, 10% val, 10% test). Na zbiorze testowym model osiągnął wynik **MAE = 2.99 lat**.
 
@@ -237,6 +242,15 @@ Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
 - Mniejsza liczba danych i epok treningowych może znacząco wpływać na jakość predykcji.
 
 
-## 8. Wnioski
+## 8. Obserwacje i wnioski
+- Na zbiorze testowym IXI nasz model zdecydowanie przewyższa model oryginalny, co można stwierdzić na podstawie wyników metryk, z których każda wskazuje na lepsze dopasowanie przewidywanego wieku do rzeczywistego przez nasz model.
+- Boxploty wyraźnie pokazują, że nasz model dobrze odwzorowuje rozkład wieku w danych testowych. Mediana predykcji naszego modelu jest blisko mediany danych rzeczywistych oraz rozstęp międzykwartylowy (IQR) jest niemal taki sam. Wykres oryginalnego modelu jest przesunięty — predykcje wieku są zawyżone, jego mediana jest wyraźnie wyższa niż w danych testowych. Dolna granica wieku w predykcjach modelu z artykułu wynosi ok. 46 lat, mimo że w danych testowych są osoby już od ok. 20 lat. To wskazuje na błąd systematyczny — model nie nauczył się rozpoznawać młodszych przypadków.
+- Na wykresie rozrzutu predykcji naszego modelu linia regresji jest bliska linii idealnego dopasowania, co oznacza, że nasz model dobrze odwzorowuje rzeczywisty trend wieku, ale jest mniej precyzyjny lokalnie – rozrzut punktów jest większy niż na analogicznym wykresie dla modelu oryginalnego. Na drugim wykresie predykcje są ściślej skupione wokół linii regresji, jednak jest ona znacznie odchylona od linii idealnego dopasowania. Wskazuje to na silny globalny bias tego modelu i systematyczne zawyżanie predykcji u osób młodszych (<40 lat).
+- Powodów systematycznego błędu modelu z artykułu można doszukiwać się w zbiorze, na którym model ten był trenowany – na obrazach MRI osób w wieku 32–96 lat, z których zdecydowana większość miała powyżej 45 lat. Nie miał więc dostępu do przykładów mózgów młodych osób, co najprawdopodobniej uniemożliwiło mu nauczenie się charakterystycznych wzorców anatomicznych dla tej grupy wiekowej. W rezultacie predykcje dla młodszych osób są przesunięte w stronę wieku, który model znał z danych treningowych, co skutkuje wyraźnym błędem systematycznym. Obserwacja ta potwierdza, że dobór reprezentatywnego i zróżnicowanego zbioru treningowego — obejmującego pełny zakres wiekowy — ma kluczowe znaczenie dla możliwości uogólnienia modelu na nowe dane.
+- Na wykresie rozrzutu pokazującym bezpośrednie porównanie predykcji wieku biologicznego generowanych przez nasz i oryginalny model zdecydowana większość punktów znajduje się poniżej linii idealnego dopasowania, czyli dla tych samych osób nasz model przewiduje niższy wiek niż model oryginalny. Różnica między predykcjami obu modeli rośnie wraz ze spadkiem wieku, co potwierdza wcześniejsze obserwacje, że oryginalny model zawyżał predykcje u osób młodszych.
+- Wykres słupkowy średniego błędu bezwzględnego (MAE) predykcji wieku w różnych przedziałach wiekowych pokazuje, że nasz model przewyższa oryginalny w większości przedziałów. Największe różnice wartości rzędu 10-20 lat są widoczne w grupach 20-40 lat. W przedziałach 45-70 lat natomiast różnice są niewielkie i błąd MAE dla obydwu modeli kształtuje się w nich na poziomie kilku lat.
+- Jak wykazano w literaturze, m.in. przez Tian et al. (2020), struktury mózgowe osób różnią się między płciami w sposób na tyle wyraźny, że możliwe jest przewidywanie płci z obrazów MRI z wysoką dokładnością — powyżej 90% u osób młodszych. Oznacza to, że modele uczące się automatycznie wykrywają i wykorzystują subtelne różnice anatomiczne między mózgami kobiet i mężczyzn, nawet jeśli informacja o płci nie była jawnie dostępna w danych treningowych. Z tego powodu postawiłyśmy sobie pytanie, czy obecność różnic strukturalnych w mózgu kobiet i mężczyzn znajduje odzwierciedlenie w wynikach predykcji wieku przez model uczony bez informacji o płci.
+- W danych treningowych (i walidacyjnych) jest niewielka przewaga kobiet (ok. 55%), ale to różnica umiarkowana. Na wykresach MAE w podziale na wiek i płeć nie widać systematycznej zależności wskazującej, że mniejsza liczba przypadków danej płci w zbiorze treningowym w danym przedziale wiąże się z wyższym MAE. Podobnie dla całego zbioru testowego model osiągnął nieco wyższy błąd predykcji w przypadku kobiet pomimo większej ich liczby w danych widzianych przez model podczas treningu.
+- Wiek biologiczny może mieć inną relację z budową mózgu u kobiet i mężczyzn, a model uczony bez jawnej informacji o płci niekoniecznie optymalnie odwzorowuje oba wzorce.
+- Model nie faworyzuje wyraźnie jednej z płci, choć nie można jednoznacznie stwierdzić, czy został równie dobrze dopasowany do wzorców strukturalnych typowych dla obu płci. Dokładniejsze wnioski w tym zakresie wymagałyby analizy głębszej warstwy działania modelu.
 
-1. Na podstawie analizy wyników oryginalnego modelu na zbiorze testowym IXI zaobserwowano systematyczne zawyżanie przewidywanego wieku biologicznego u osób młodszych (poniżej 40. roku życia). Model ten trenowany był na obrazach MRI osób w wieku 32–96 lat, z których zdecydowana większość miała powyżej 45 lat. Nie miał więc dostępu do przykładów mózgów młodych osób, co najprawdopodobniej uniemożliwiło mu nauczenie się charakterystycznych wzorców anatomicznych dla tej grupy wiekowej. W rezultacie predykcje dla młodszych osób są przesunięte w stronę wieku, który model znał z danych treningowych, co skutkuje wyraźnym błędem systematycznym. Obserwacja ta potwierdza, że dobór reprezentatywnego i zróżnicowanego zbioru treningowego — obejmującego pełny zakres wiekowy — ma kluczowe znaczenie dla możliwości uogólnienia modelu na nowe dane.
