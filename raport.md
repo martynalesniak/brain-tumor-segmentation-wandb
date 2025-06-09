@@ -254,3 +254,27 @@ Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
 - Wiek biologiczny może mieć inną relację z budową mózgu u kobiet i mężczyzn, a model uczony bez jawnej informacji o płci niekoniecznie optymalnie odwzorowuje oba wzorce.
 - Model nie faworyzuje wyraźnie jednej z płci, choć nie można jednoznacznie stwierdzić, czy został równie dobrze dopasowany do wzorców strukturalnych typowych dla obu płci. Dokładniejsze wnioski w tym zakresie wymagałyby analizy głębszej warstwy działania modelu.
 
+
+## Przegląd literatury
+Poniżej krótki opis innych publikacji, które wykorzystują ten sam model 3D CNN.
+1. **Jonsson et al. (2019)** – *“Brain age prediction using deep learning on raw imaging data”*  
+   - Zastosowano 3D‑CNN (ResNet) do przewidywania wieku mózgu na podstawie surowych danych T1‑MRI (UK Biobank, Iceland, IXI).  
+   - Uzyskano MAE około 3.5 roku.  
+   - Uwzględniono także analizę asocjacji genomowych (GWAS) dla różnicy między wiekiem przewidywanym a rzeczywistym.   
+
+2. **Cheng et al. (2021)** – *TSAN: Two-stage attention network for brain age estimation*  
+   - Wykorzystano dwustopniowy 3D‑CNN z mechanizmem uwagi i funkcją ranking loss.  
+   - Osiągnięto bardzo niski błąd MAE: 2.43 roku.  
+   - Model dobrze radzi sobie z klasyfikacją zaburzeń neurologicznych (AD, MCI).  
+
+3. **Kancharla & Sinha (2024)** – *Spatial-attention 3D CNN for robust brain age prediction*  
+   - 3D‑CNN z mechanizmem uwagi przestrzennej (spatial attention).  
+   - Uzyskano MAE 1.66 roku na zbiorze ADNI – jedna z najdokładniejszych znanych metod.  
+   - Wysoka interpretowalność i odporność na zakłócenia danych.  
+
+4. **Fisch et al. (2021)** – *Raw T1 MRI prediction using 3D CNNs*  
+   - Trening bez klasycznego przetwarzania danych (np. bez segmentacji czy ekstrakcji cech).  
+   - Model osiągnął MAE ~2.84 roku na danych z German National Cohort.  
+   - Potwierdza skuteczność end‑to‑end deep learningu bez wstępnego modelowania.
+
+
