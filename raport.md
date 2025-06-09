@@ -128,7 +128,7 @@ Do trenowania modelu wykorzystano skrypt  **`brain_age_trainer_holdout.py`** zna
 #### Główne etapy treningu:
 
 1. **Wczytanie i przygotowanie danych:**
-   - Dane wczytywane są z pliku CSV, który zawiera ścieżki do przetworzonych i zarejestrowanych obrazów oraz informacje o wieku i podziale na zbiory (`train`, `dev`, `test`).
+   - Dane wczytywane są z pliku CSV, który zawiera ścieżki do przetworzonych i zarejestrowanych obrazów oraz informacje o wieku i podziale na zbiory (`train` 70%, `dev` 15%, `test` 15%).
    - Na zbiorze treningowym stosowana jest augmentacja obrazów, na zbiorach walidacyjnych i testowych brak augmentacji.
 
 2. **Tworzenie zestawów danych i loaderów:**
@@ -186,8 +186,8 @@ Aby ocenić jakość predykcji naszego modelu, porównałyśmy jego wyniki z rez
 
 | Model               | MAE   | RMSE   | R²    | Pearson r |
 |--------------------|-------|--------|-------|-----------|
-| Nasz model         | 6.26  | 60.61  | 0.78  | 0.88      |
-| Model z artykułu   | 12.67 | 253.75 | 0.08  | 0.88      |
+| Nasz model         | 6.26  | 7.79  | 0.78  | 0.88      |
+| Model z artykułu   | 12.67 | 15.93 | 0.08  | 0.88      |
 
 > **Uwaga:** W publikacji autorzy podali także wynik MAE = **2.99**, uzyskany przy użyciu znacznie większego oraz bardziej zróżnicowanego zbioru danych.
 
