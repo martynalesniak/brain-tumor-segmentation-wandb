@@ -243,10 +243,11 @@ Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
 
 
 ### Obrazy MRI kobiet i mężczyzn w różnym wieku
-Poniższe wygenerowane przez nas zestawienia obrazów MRI mózgu kobiet i mężczyzn w wieku 20, 40, 60 i 80 lat pozwalają zauważyć zmiany w strukturze mózgu zachodzące wraz z wiekiem oraz różnice między płciami. 
+Poniższe wygenerowane przez nas zestawienia obrazów MRI mózgu kobiet i mężczyzn w wieku 20, 40, 60 i 80 lat pozwalają zauważyć zmiany w strukturze mózgu zachodzące wraz z wiekiem oraz różnice między płciami. Dzięki przestrzennemu wyrównaniu obrazów do wzorca MNI możliwe jest dokładniejsze porównanie na podstawie przekrojów.
 
-<img src="images/obrazy_mri_axial.png" alt="Przekroje poprzeczne MRI kobiet i mężczyzn" width="800">
-<img src="images/obrazy_mri_sagittal.png" alt="Przekroje strzałkowe MRI kobiet i mężczyzn" width="800">
+<img src="images/obrazy_mri_axial.png" alt="Przekroje poprzeczne MRI kobiet i mężczyzn" width="900">
+
+<img src="images/obrazy_mri_sagittal.png" alt="Przekroje strzałkowe MRI kobiet i mężczyzn" width="900">
 
 Na obrazach w obydwu przekrojach widoczne jest stopniowe zmniejszanie objętości mózgu i poszerzanie przestrzeni płynu mózgowo-rdzeniowego. Osoby młode cechuje gęstsze ułożenie zakrętów mózgowych oraz węższe bruzdy. Natomiast u osób starszych można zauważyć stopniowy zanik kory mózgowej (atrofię korową), poszerzenie bruzd oraz wyraźne powiększenie komór bocznych. Na przekrojach strzałkowych widać ponadto, jak wraz z wiekiem zmniejsza się grubość ciała modzelowatego.
 
