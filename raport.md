@@ -242,6 +242,17 @@ Zdajemy sobie sprawę, że to porównanie ma ograniczoną wartość poznawczą:
 - Mniejsza liczba danych i epok treningowych może znacząco wpływać na jakość predykcji.
 
 
+### Obrazy MRI kobiet i mężczyzn w różnym wieku
+Poniższe wygenerowane przez nas zestawienia obrazów MRI mózgu kobiet i mężczyzn w wieku 20, 40, 60 i 80 lat pozwalają zauważyć zmiany w strukturze mózgu zachodzące wraz z wiekiem oraz różnice między płciami. 
+
+<img src="images/obrazy_mri_axial.png" alt="Przekroje poprzeczne MRI kobiet i mężczyzn" width="800">
+<img src="images/obrazy_mri_sagittal.png" alt="Przekroje strzałkowe MRI kobiet i mężczyzn" width="800">
+
+Na obrazach w obydwu przekrojach widoczne jest stopniowe zmniejszanie objętości mózgu i poszerzanie przestrzeni płynu mózgowo-rdzeniowego. Osoby młode cechuje gęstsze ułożenie zakrętów mózgowych oraz węższe bruzdy. Natomiast u osób starszych można zauważyć stopniowy zanik kory mózgowej (atrofię korową), poszerzenie bruzd oraz wyraźne powiększenie komór bocznych. Na przekrojach strzałkowych widać ponadto, jak wraz z wiekiem zmniejsza się grubość ciała modzelowatego.
+
+Porównując obrazy MRI kobiet i mężczyzn, można zaobserwować takie różnice morfologiczne, jak nieco większa objętość całkowita mózgu mężczyzn (zgodnie z literaturą), a także szybszy zanik tkanki mózgowej wraz z wiekiem u mężczyzn, widoczny przez większe komory i szersze bruzdy, szczególnie w obszarze czołowo-skroniowym. 
+
+
 ## 8. Obserwacje i wnioski
 - Na zbiorze testowym IXI nasz model zdecydowanie przewyższa model oryginalny, co można stwierdzić na podstawie wyników metryk, z których każda wskazuje na lepsze dopasowanie przewidywanego wieku do rzeczywistego przez nasz model.
 - Boxploty wyraźnie pokazują, że nasz model dobrze odwzorowuje rozkład wieku w danych testowych. Mediana predykcji naszego modelu jest blisko mediany danych rzeczywistych oraz rozstęp międzykwartylowy (IQR) jest niemal taki sam. Wykres oryginalnego modelu jest przesunięty — predykcje wieku są zawyżone, jego mediana jest wyraźnie wyższa niż w danych testowych. Dolna granica wieku w predykcjach modelu z artykułu wynosi ok. 46 lat, mimo że w danych testowych są osoby już od ok. 20 lat. To wskazuje na błąd systematyczny — model nie nauczył się rozpoznawać młodszych przypadków.
